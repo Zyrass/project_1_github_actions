@@ -50,6 +50,11 @@ jobs:
             - name: Exécution des tests
               run: npm run test:ci # Exécute le script de test
 
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     # Job pour le déploiement
     deploy:
         needs: tests # Dépend du job "tests"
@@ -62,6 +67,7 @@ jobs:
               run: | # Commandes shell à exécuter
 
 
+
                   eval $(ssh-agent -s) # Initialisation de l'agent SSH
                   ssh-add - <<< "${{ secrets.SSH_KEY_VPS }}" # Ajoute la clé SSH privée
                   mkdir -p ~/.ssh # Créé le dossier .ssh si nécessaire
@@ -69,7 +75,3 @@ jobs:
                   scp -r ./server $SERVER_USER@$SERVER_IP:/var/www # Copie le code sur le serveur
                   ssh $SERVER_USER@$SERVER_IP "cd /var/www/server && npm install --omit=dev" # Installe les dépendances sur le serveur
                   ssh $SERVER_USER@$SERVER_IP "cd /var/www/server && pm2 startOrRestart ecosystem.config.js --env production && pm2 save" # Démarrer ou redémarre le service avec PM2
-            - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v3
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
