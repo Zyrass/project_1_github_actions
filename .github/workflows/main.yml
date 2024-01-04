@@ -131,8 +131,6 @@ jobs:
               run: | # Commandes shell à exécuter
 
 
-
-
                   eval $(ssh-agent -s) # Initialisation de l'agent SSH
                   ssh-add - <<< "${{ secrets.SSH_KEY_VPS }}" # Ajoute la clé SSH privée
                   mkdir -p ~/.ssh # Créé le dossier .ssh si nécessaire
