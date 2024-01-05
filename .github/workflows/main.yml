@@ -124,11 +124,11 @@ jobs:
                   cache: 'npm' # Met en cache les dépendances npm
                   cache-dependency-path: '**/package-lock.json' # Chemin du fichier package-lock.json
 
-            - name: Téléchargement de l'artefact build du frontend
-              uses: actions/download-artifact@v3
-              with:
-                  name: build
-                  path: client/dist/
+            - name: Construction de l'application
+              run: |
+                  cd client
+                  npm ci --prefer-offline
+                  npm run build:e2e
 
             - name: Installation des dépendances serveur
               run: |
@@ -150,6 +150,11 @@ jobs:
                   wait-on-timeout: 60
                   config: baseUrl=http://localhost:4173
 
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     # Job pour le déploiement
     deploy:
         needs:
@@ -168,6 +173,10 @@ jobs:
 
             - name: Déploiement sur le client
               run: | # Commandes shell à exécuter
+
+
+
+
 
 
 
